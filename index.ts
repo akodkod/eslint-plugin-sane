@@ -1,4 +1,5 @@
 import attributeFormatting from "./rules/attribute-formatting";
+import noAbbreviations from "./rules/no-abbreviations";
 import prohibitedComments from "./rules/prohibited-comments";
 
 const plugin = {
@@ -8,6 +9,7 @@ const plugin = {
   },
   rules: {
     "attribute-formatting": attributeFormatting,
+    "no-abbreviations": noAbbreviations,
     "prohibited-comments": prohibitedComments,
   },
 };
