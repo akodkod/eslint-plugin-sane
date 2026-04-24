@@ -22,7 +22,7 @@ export default [
     },
     rules: {
       "sane/attribute-formatting": "error",
-      "sane/no-delete-comments": "error",
+      "sane/prohibited-comments": "error",
     },
   },
 ];
@@ -33,4 +33,17 @@ export default [
 | Rule | Description | Fixable |
 | --- | --- | --- |
 | `sane/attribute-formatting` | Enforce single attributes on the same line and multiple attributes on separate lines | Yes |
-| `sane/no-delete-comments` | Disallow comments starting with `// DELETE` or `// delete` | No |
+| `sane/prohibited-comments` | Disallow line comments starting with prohibited keywords (default: `DELETE`, `REMEMBER`) | No |
+
+### `sane/prohibited-comments` options
+
+Accepts a single options object:
+
+- `keywords` (`string[]`, default `["DELETE", "REMEMBER"]`) — keywords that
+  may not appear at the start of a line comment. Matching is
+  case-insensitive and uses a word boundary, so `// deleted` and
+  `// remembered` are allowed.
+
+```js
+"sane/prohibited-comments": ["error", { keywords: ["DELETE", "REMEMBER", "FIXME"] }],
+```

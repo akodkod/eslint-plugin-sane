@@ -1,5 +1,5 @@
 import attributeFormatting from "./rules/attribute-formatting";
-import noDeleteComments from "./rules/no-delete-comments";
+import prohibitedComments from "./rules/prohibited-comments";
 
 const plugin = {
   meta: {
@@ -8,7 +8,7 @@ const plugin = {
   },
   rules: {
     "attribute-formatting": attributeFormatting,
-    "no-delete-comments": noDeleteComments,
+    "prohibited-comments": prohibitedComments,
   },
 };
 
