@@ -4,7 +4,7 @@ import prohibitedComments from "./rules/prohibited-comments";
 const plugin = {
   meta: {
     name: "eslint-plugin-sane",
-    version: "1.0.0",
+    version: "2.0.0",
   },
   rules: {
     "attribute-formatting": attributeFormatting,
