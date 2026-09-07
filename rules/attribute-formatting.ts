@@ -24,7 +24,13 @@ const rule: Rule.RuleModule = {
         "Enforce single attributes on the same line and multiple attributes on separate lines",
     },
     fixable: "whitespace",
-    schema: [],
+    schema: [{
+      type: "object",
+      properties: {
+        ignoreSelfClosing: { type: "boolean" },
+      },
+      additionalProperties: false,
+    }],
     messages: {
       singleOnSameLine:
         "A single attribute should be on the same line as the opening tag.",
@@ -37,6 +43,7 @@ const rule: Rule.RuleModule = {
 
   create(context) {
     const sourceCode = context.sourceCode;
+    const options = (context.options[0] ?? {}) as { ignoreSelfClosing?: boolean };
     const newline = sourceCode.text.includes("\r\n") ? "\r\n" : "\n";
 
     return {
@@ -44,7 +51,7 @@ const rule: Rule.RuleModule = {
         const jsxNode = node as unknown as JSXNode;
         const attributes = jsxNode.attributes;
 
-        if (attributes.length === 0) return;
+        if (attributes.length === 0 || (options.ignoreSelfClosing && jsxNode.selfClosing)) return;
 
         const tagLine = jsxNode.name.loc.start.line;
         const indent = getIndent(sourceCode, node);

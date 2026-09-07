@@ -10,21 +10,22 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("prohibited-comments", rule, {
   valid: [
+    { code: `// imports are grouped below` },
+    { code: `// returns the result` },
+    { code: `// format the output` },
+    { code: `// Import remains case-sensitive` },
+    { code: `/* const unused = true */` },
+    { code: `// const unused = true`, options: [{ keywords: ["TODO"] }] },
     { code: `// This is a normal comment` },
     { code: `// Deleted this function` },
     { code: `// deleting stuff` },
     { code: `// DELETED` },
-    { code: `// delete` },
-    { code: `// delete this after migration` },
     { code: `// Delete (capitalized differently)` },
-    { code: `//delete` },
     { code: `const x = 1; // not a delete comment` },
     { code: `// remembered to do this` },
     { code: `// REMEMBERED` },
     { code: `// remembering things` },
-    { code: `// remember to refactor this` },
     { code: `// Remember to ship` },
-    { code: `//remember` },
     { code: `/* DELETE */` },
     { code: `/* REMEMBER */` },
     {
@@ -38,6 +39,27 @@ ruleTester.run("prohibited-comments", rule, {
   ],
 
   invalid: [
+    ...[
+      "DELETE", "REMEMBER", "delete", "remember",
+      "import", "const", "let", "export", "await", "return", "throw",
+      "if", "else", "for", "while", "switch", "case", "break", "continue",
+    ].map(keyword => ({
+      code: `// ${keyword} example`,
+      errors: [{ messageId: "prohibitedComment", data: { keyword } }],
+    })),
+    {
+      code: `//delete`,
+      errors: [{ messageId: "prohibitedComment", data: { keyword: "delete" } }],
+    },
+    {
+      code: `//remember`,
+      errors: [{ messageId: "prohibitedComment", data: { keyword: "remember" } }],
+    },
+    {
+      code: `// const unused = true`,
+      options: [{ keywords: [] }],
+      errors: [{ messageId: "prohibitedComment", data: { keyword: "const" } }],
+    },
     {
       code: `// DELETE`,
       errors: [{ messageId: "prohibitedComment", data: { keyword: "DELETE" } }],

@@ -13,6 +13,12 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("attribute-formatting", rule, {
   valid: [
+    ...[
+      `<Component\n  value="foo"\n/>`,
+      `<Component a="1" b="2" />`,
+      `<Component value={\n  name\n} />`,
+      `<Component {...props} other="value" />`,
+    ].map(code => ({ code, options: [{ ignoreSelfClosing: true }] })),
     // No attributes
     {
       code: `<div />`,
@@ -78,6 +84,18 @@ ruleTester.run("attribute-formatting", rule, {
   ],
 
   invalid: [
+    {
+      code: `<Component a="1" b="2" />`,
+      options: [{ ignoreSelfClosing: false }],
+      output: `<Component\n  a="1"\n  b="2" />`,
+      errors: [{ messageId: "multipleOnSeparateLines" }],
+    },
+    {
+      code: `<Component a="1" b="2"><Child a="1" b="2" /></Component>`,
+      options: [{ ignoreSelfClosing: true }],
+      output: `<Component\n  a="1"\n  b="2"><Child a="1" b="2" /></Component>`,
+      errors: [{ messageId: "multipleOnSeparateLines" }],
+    },
     {
       code: `<div a="1" /* keep */ b="2" />`,
       output: null,

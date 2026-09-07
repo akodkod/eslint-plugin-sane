@@ -1,6 +1,10 @@
 import type { Rule } from "eslint";
 
-const DEFAULT_KEYWORDS = ["DELETE", "REMEMBER"];
+const DEFAULT_KEYWORDS = [
+  "DELETE", "REMEMBER", "delete", "remember",
+  "import", "const", "let", "export", "await", "return", "throw",
+  "if", "else", "for", "while", "switch", "case", "break", "continue",
+];
 
 function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
