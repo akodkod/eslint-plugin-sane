@@ -16,14 +16,6 @@ function getIndent(sourceCode: SourceCode, node: Rule.Node): string {
   return match?.[1] ?? "";
 }
 
-function getLineOffset(sourceCode: SourceCode, line: number): number {
-  let offset = 0;
-  for (let i = 0; i < line - 1; i++) {
-    offset += sourceCode.lines[i]!.length + 1; // +1 for newline
-  }
-  return offset;
-}
-
 const rule: Rule.RuleModule = {
   meta: {
     type: "layout",
@@ -45,6 +37,7 @@ const rule: Rule.RuleModule = {
 
   create(context) {
     const sourceCode = context.sourceCode;
+    const newline = sourceCode.text.includes("\r\n") ? "\r\n" : "\n";
 
     return {
       JSXOpeningElement(node: Rule.Node) {
@@ -66,31 +59,35 @@ const rule: Rule.RuleModule = {
                 node: attr,
                 messageId: "singleMultilineOnSeparateLine",
                 fix(fixer) {
-                  const tagNameEnd = jsxNode.name.loc.end;
-                  const tokenAfterTagName = sourceCode.getTokenAfter(
-                    jsxNode.name as unknown as Rule.Node,
-                  )!;
-                  return fixer.replaceTextRange(
-                    [tagNameEnd.column + getLineOffset(sourceCode, tagNameEnd.line), tokenAfterTagName.range![0]],
-                    "\n" + attrIndent,
-                  );
+                  const range: [number, number] = [
+                    sourceCode.getTokenBefore(attr)!.range![1], attr.range![0],
+                  ];
+                  if (!/^\s*$/.test(sourceCode.text.slice(...range))) return null;
+                  return fixer.replaceTextRange(range, newline + attrIndent);
                 },
               });
             }
           } else {
-            if (attr.loc.start.line !== tagLine) {
+            if (attr.loc.start.line !== tagLine || node.loc!.end.line !== attr.loc.end.line) {
               context.report({
                 node: attr,
                 messageId: "singleOnSameLine",
                 fix(fixer) {
-                  const tagNameEnd = jsxNode.name.loc.end;
-                  return fixer.replaceTextRange(
-                    [
-                      getLineOffset(sourceCode, tagNameEnd.line) + tagNameEnd.column,
-                      attr.range![0],
-                    ],
-                    " ",
-                  );
+                  const before: [number, number] = [
+                    sourceCode.getTokenBefore(attr)!.range![1],
+                    attr.range![0],
+                  ];
+                  const after: [number, number] = [
+                    attr.range![1],
+                    sourceCode.getTokenAfter(attr)!.range![0],
+                  ];
+                  // Keep comments between the attribute and tag delimiters.
+                  if (![before, after].every(([start, end]) =>
+                    /^\s*$/.test(sourceCode.text.slice(start, end)))) return null;
+                  return [
+                    fixer.replaceTextRange(before, " "),
+                    fixer.replaceTextRange(after, jsxNode.selfClosing ? " " : ""),
+                  ];
                 },
               });
             }
@@ -122,26 +119,11 @@ const rule: Rule.RuleModule = {
 
                 for (let i = 0; i < attributes.length; i++) {
                   const attr = attributes[i]!;
-                  if (i === 0) {
-                    const tagNameEnd = jsxNode.name.loc.end;
-                    const rangeStart =
-                      getLineOffset(sourceCode, tagNameEnd.line) +
-                      tagNameEnd.column;
-                    fixes.push(
-                      fixer.replaceTextRange(
-                        [rangeStart, attr.range![0]],
-                        "\n" + attrIndent,
-                      ),
-                    );
-                  } else {
-                    const prevAttr = attributes[i - 1]!;
-                    fixes.push(
-                      fixer.replaceTextRange(
-                        [prevAttr.range![1], attr.range![0]],
-                        "\n" + attrIndent,
-                      ),
-                    );
-                  }
+                  const range: [number, number] = [
+                    sourceCode.getTokenBefore(attr)!.range![1], attr.range![0],
+                  ];
+                  if (!/^\s*$/.test(sourceCode.text.slice(...range))) return null;
+                  fixes.push(fixer.replaceTextRange(range, newline + attrIndent));
                 }
 
                 return fixes;

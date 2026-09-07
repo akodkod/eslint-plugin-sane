@@ -78,6 +78,41 @@ ruleTester.run("attribute-formatting", rule, {
   ],
 
   invalid: [
+    {
+      code: `<div a="1" /* keep */ b="2" />`,
+      output: null,
+      errors: [{ messageId: "multipleOnSeparateLines" }],
+    },
+    {
+      code: `<div /* keep */ value={\n  name\n} />`,
+      output: null,
+      errors: [{ messageId: "singleMultilineOnSeparateLine" }],
+    },
+    {
+      code: `// CRLF\r\n<div a="1" b="2" />`,
+      output: `// CRLF\r\n<div\r\n  a="1"\r\n  b="2" />`,
+      errors: [{ messageId: "multipleOnSeparateLines" }],
+    },
+    {
+      code: `<p\n  className="foo"\n>{name}</p>`,
+      output: `<p className="foo">{name}</p>`,
+      errors: [{ messageId: "singleOnSameLine" }],
+    },
+    {
+      code: `<p className="foo"\n>{name}</p>`,
+      output: `<p className="foo">{name}</p>`,
+      errors: [{ messageId: "singleOnSameLine" }],
+    },
+    {
+      code: `// CRLF\r\n<p\r\n  className="foo"\r\n>{name}</p>`,
+      output: `// CRLF\r\n<p className="foo">{name}</p>`,
+      errors: [{ messageId: "singleOnSameLine" }],
+    },
+    {
+      code: `<p /* keep */\n  className="foo">text</p>`,
+      output: null,
+      errors: [{ messageId: "singleOnSameLine" }],
+    },
     // Single attribute on separate line (should be on same line)
     {
       code: [
@@ -85,7 +120,7 @@ ruleTester.run("attribute-formatting", rule, {
         `  className="foo"`,
         `/>`,
       ].join("\n"),
-      output: `<div className="foo"\n/>`,
+      output: `<div className="foo" />`,
       errors: [{ messageId: "singleOnSameLine" }],
     },
 
