@@ -22,6 +22,7 @@ export default [
     },
     rules: {
       "sane/attribute-formatting": "error",
+      "sane/multiline-jsx-parentheses": "error",
       "sane/tag-content-newline": "error",
       "sane/no-abbreviations": ["error", {
         e: ["event", "error"],
@@ -40,10 +41,26 @@ export default [
 | --- | --- | --- |
 | `sane/attribute-formatting` | Enforce single attributes on the same line and multiple attributes on separate lines | Yes |
 | `sane/tag-content-newline` | Require tag content and closing tags on separate lines | Yes |
+| `sane/multiline-jsx-parentheses` | Wrap multiline JSX starting on an expression's line in parentheses | Yes |
 | `sane/no-abbreviations` | Disallow abbreviated identifier names and suggest full-word replacements | No |
 | `sane/prohibited-comments` | Disallow line comments starting with prohibited keywords | No |
 
 ### JSX formatting
+
+Enable `"sane/multiline-jsx-parentheses": "error"` to wrap multiline JSX that
+starts on the same line as a surrounding expression, such as `condition && <div>`:
+
+```jsx
+{memberCodes && (
+  <div>
+    {memberCodes}
+  </div>
+)}
+```
+
+This also handles fragments, ternaries, and arrow function bodies. Existing
+parentheses are reused when JSX starts beside the opening parenthesis. Single-line
+JSX, JSX children, and JSX already starting on a new line are left unchanged.
 
 Enable both `sane/attribute-formatting` and `sane/tag-content-newline` to fix:
 
