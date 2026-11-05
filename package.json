@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-sane",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "module": "dist/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

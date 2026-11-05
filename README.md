@@ -49,6 +49,8 @@ export default [
 | `sane/multiline-padding` | Require blank lines around multiline statements and members | Yes |
 | `sane/no-code-wall` | Break long runs of mixed statements into blocks with blank lines (experimental) | No |
 | `sane/empty-line-before-comment` | Require an empty line before standalone comments | Yes |
+| `sane/trailing-comment-period` | Remove the final period from comments with only one sentence | Yes |
+| `sane/prohibited-comment-characters` | Disallow configured characters in comment text | No |
 
 ### JSX formatting
 
@@ -288,4 +290,41 @@ const first = 1;
 
 // Explain the next step
 const second = 2;
+```
+
+### `sane/trailing-comment-period`
+
+Removes a comment's final period when it is the only period in the comment. A
+comment with any earlier dot, such as a second sentence, a URL, an abbreviation,
+or an ellipsis, is left unchanged. Adjacent `//` comments on their own lines form
+one comment. Inline comments and `/* */` comments are checked alone.
+
+```js
+// Before
+// Explain this operation.
+
+// After
+// Explain this operation
+
+// Unchanged
+// First sentence.
+// Second sentence.
+```
+
+### `sane/prohibited-comment-characters`
+
+Reports each prohibited character in comment text. Comment delimiters such as
+`//`, `/*`, and `*/` are not checked. It has no autofix, because the right
+rewrite depends on the sentence.
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `characters` | `[";"]` | Characters to report. It replaces the default list. An empty list allows all characters |
+
+```js
+// Bad
+// Load the record; then update it
+
+// Good
+// Load the record, then update it
 ```
