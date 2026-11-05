@@ -1,6 +1,7 @@
 import type { ESLint } from "eslint";
 import { version } from "./package.json";
 import attributeFormatting from "./rules/attribute-formatting";
+import emptyLineBeforeComment from "./rules/empty-line-before-comment";
 import noAbbreviations from "./rules/no-abbreviations";
 import prohibitedComments from "./rules/prohibited-comments";
 import tagContentNewline from "./rules/tag-content-newline";
@@ -15,6 +16,7 @@ const plugin: ESLint.Plugin = {
   },
   rules: {
     "attribute-formatting": attributeFormatting,
+    "empty-line-before-comment": emptyLineBeforeComment,
     "tag-content-newline": tagContentNewline,
     "multiline-jsx-parentheses": multilineJsxParentheses,
     "multiline-padding": multilinePadding,

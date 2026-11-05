@@ -48,6 +48,7 @@ export default [
 | `sane/prohibited-comments` | Disallow line comments starting with prohibited keywords | No |
 | `sane/multiline-padding` | Require blank lines around multiline statements and members | Yes |
 | `sane/no-code-wall` | Break long runs of mixed statements into blocks with blank lines (experimental) | No |
+| `sane/empty-line-before-comment` | Require an empty line before standalone comments | Yes |
 
 ### JSX formatting
 
@@ -266,4 +267,25 @@ if (!service) throw new Error("Missing service");
 
 const source = await request(service);
 const sourceVariables = parse(source);
+```
+
+### `sane/empty-line-before-comment`
+
+Requires an empty line before a comment on its own line. It is not required when
+the comment is the first in the file, follows another comment on its own line, or
+follows a line that opens a block: `{`, `[`, `(`, `=>`, `case value:`, or
+`default:`. Inline comments and tool directives, such as `eslint-disable`,
+`oxlint-disable`, `@ts-expect-error`, and `cspell:`, are ignored.
+
+```js
+// Before
+const first = 1;
+// Explain the next step
+const second = 2;
+
+// After
+const first = 1;
+
+// Explain the next step
+const second = 2;
 ```
