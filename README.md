@@ -30,6 +30,7 @@ export default [
         ua: ["userAccount"],
       }],
       "sane/prohibited-comments": "error",
+      "sane/multiline-padding": "error",
     },
   },
 ];
@@ -44,6 +45,7 @@ export default [
 | `sane/multiline-jsx-parentheses` | Wrap multiline JSX starting on an expression's line in parentheses | Yes |
 | `sane/no-abbreviations` | Disallow abbreviated identifier names and suggest full-word replacements | No |
 | `sane/prohibited-comments` | Disallow line comments starting with prohibited keywords | No |
+| `sane/multiline-padding` | Require blank lines around multiline statements and members | Yes |
 
 ### JSX formatting
 
@@ -182,3 +184,51 @@ Default keywords:
 ```js
 "sane/prohibited-comments": ["error", { keywords: ["DELETE", "REMEMBER", "FIXME"] }],
 ```
+
+### `sane/multiline-padding`
+
+Requires at least one blank line before and after every multiline statement or
+member. Enable it with `"sane/multiline-padding": "error"`. There are no options.
+Autofixes insert missing whitespace and preserve existing extra blank lines,
+indentation, and LF/CRLF line endings.
+
+```js
+// Before
+const match = raw.match(pattern);
+// Report the match
+if (match) {
+  report(match);
+}
+continueWork();
+
+// After
+const match = raw.match(pattern);
+
+// Report the match
+if (match) {
+  report(match);
+}
+
+continueWork();
+```
+
+All multiline statements qualify, including object/array declarations, ternaries,
+functions, wrapped calls, method chains, imports, and exports. The rule checks
+programs, blocks, function bodies, switch-case bodies, TypeScript namespaces,
+class members (including static blocks), and TypeScript interface members.
+Members of object types, such as `type Example = { ... }`, are not checked.
+Multiline status uses the code's start/end lines, excluding surrounding
+comments.
+
+No padding is added at scope boundaries, between array elements or object-literal
+properties, inside JSX content/attributes, or between parts of an expression.
+Statements inside nested function bodies are still checked, including object
+methods and JSX event handlers. `else`, `catch`, `finally`, and the closing
+`while` of a `do` loop stay attached to their construct.
+
+Comments on their own lines stay with the following statement, so the blank line
+goes before the first of them. A blank line between those comments and the
+statement does not count. Trailing inline comments stay with the preceding
+statement. A line with only spaces or tabs counts as a blank line. Same-line
+siblings are split with a blank line, using sibling indentation or, when none is
+available, two spaces inside the containing scope.

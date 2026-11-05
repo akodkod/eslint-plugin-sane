@@ -5,6 +5,7 @@ import noAbbreviations from "./rules/no-abbreviations";
 import prohibitedComments from "./rules/prohibited-comments";
 import tagContentNewline from "./rules/tag-content-newline";
 import multilineJsxParentheses from "./rules/multiline-jsx-parentheses";
+import multilinePadding from "./rules/multiline-padding";
 
 const plugin: ESLint.Plugin = {
   meta: {
@@ -15,6 +16,7 @@ const plugin: ESLint.Plugin = {
     "attribute-formatting": attributeFormatting,
     "tag-content-newline": tagContentNewline,
     "multiline-jsx-parentheses": multilineJsxParentheses,
+    "multiline-padding": multilinePadding,
     "no-abbreviations": noAbbreviations,
     "prohibited-comments": prohibitedComments,
   },
