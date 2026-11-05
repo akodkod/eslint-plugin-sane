@@ -31,6 +31,7 @@ export default [
       }],
       "sane/prohibited-comments": "error",
       "sane/multiline-padding": "error",
+      "sane/no-code-wall": "warn",
     },
   },
 ];
@@ -46,6 +47,7 @@ export default [
 | `sane/no-abbreviations` | Disallow abbreviated identifier names and suggest full-word replacements | No |
 | `sane/prohibited-comments` | Disallow line comments starting with prohibited keywords | No |
 | `sane/multiline-padding` | Require blank lines around multiline statements and members | Yes |
+| `sane/no-code-wall` | Break long runs of mixed statements into blocks with blank lines (experimental) | No |
 
 ### JSX formatting
 
@@ -232,3 +234,36 @@ statement does not count. Trailing inline comments stay with the preceding
 statement. A line with only spaces or tabs counts as a blank line. Same-line
 siblings are split with a blank line, using sibling indentation or, when none is
 available, two spaces inside the containing scope.
+
+### `sane/no-code-wall`
+
+Experimental. Reports runs of statements with no blank line that are long and
+mix several kinds of operations. The kinds are declarations, expressions,
+branches (`if`, `switch`), loops, `try`, and jumps (`return`, `throw`, `break`,
+`continue`). Imports, exports, and function or class declarations end a run.
+It has no autofix, because the right blocks depend on meaning.
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `minLines` | 5 | Fewest lines in a run before it is reported |
+| `minKinds` | 2 | Fewest different kinds of operations in the run |
+
+```js
+// Before: 6 lines, 2 kinds
+const missing = keys.filter(key => !variables[key]);
+if (missing.length === 0) continue;
+const service = services.find(Boolean);
+if (!service) throw new Error("Missing service");
+const source = await request(service);
+const sourceVariables = parse(source);
+
+// After
+const missing = keys.filter(key => !variables[key]);
+if (missing.length === 0) continue;
+
+const service = services.find(Boolean);
+if (!service) throw new Error("Missing service");
+
+const source = await request(service);
+const sourceVariables = parse(source);
+```

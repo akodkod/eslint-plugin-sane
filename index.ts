@@ -6,6 +6,7 @@ import prohibitedComments from "./rules/prohibited-comments";
 import tagContentNewline from "./rules/tag-content-newline";
 import multilineJsxParentheses from "./rules/multiline-jsx-parentheses";
 import multilinePadding from "./rules/multiline-padding";
+import noCodeWall from "./rules/no-code-wall";
 
 const plugin: ESLint.Plugin = {
   meta: {
@@ -18,6 +19,7 @@ const plugin: ESLint.Plugin = {
     "multiline-jsx-parentheses": multilineJsxParentheses,
     "multiline-padding": multilinePadding,
     "no-abbreviations": noAbbreviations,
+    "no-code-wall": noCodeWall,
     "prohibited-comments": prohibitedComments,
   },
 };
